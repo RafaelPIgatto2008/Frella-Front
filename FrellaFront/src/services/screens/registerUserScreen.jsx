@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Alert, Text, TouchableOpacity } from 'react-native';
 import api from "../ApiUrl";
 import { styles } from '../styles/registerUserStyle';
 
-export default function RegisterScreen() {
+export default function RegisterScreen({ onRegisterSuccess }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,6 +31,7 @@ export default function RegisterScreen() {
             setEmail('');
             setPassword('');
             setCpf('');
+            onRegisterSuccess?.();
 
         } catch (error) {
             const errorMsg = error.response?.data?.message || "Falha ao registar.";
