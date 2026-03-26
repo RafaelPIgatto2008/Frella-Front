@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
+import HomeScreen from './src/services/screens/homeScreen';
 import LoginScreen from './src/services/screens/loginScreen';
 import RegisterScreen from './src/services/screens/registerUserScreen';
+import { styles } from './src/services/styles/appStyle';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('register');
@@ -10,17 +12,18 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8F9FE" />
       {currentScreen === 'register' ? (
-        <RegisterScreen onRegisterSuccess={() => setCurrentScreen('login')} />
+        <RegisterScreen
+          onRegisterSuccess={() => setCurrentScreen('login')}
+          onGoToLogin={() => setCurrentScreen('login')}
+        />
+      ) : currentScreen === 'login' ? (
+        <LoginScreen
+          onGoToRegister={() => setCurrentScreen('register')}
+          onLoginSuccess={() => setCurrentScreen('home')}
+        />
       ) : (
-        <LoginScreen onGoToRegister={() => setCurrentScreen('register')} />
+        <HomeScreen onLogout={() => setCurrentScreen('login')} />
       )}
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FE',
-  },
-});

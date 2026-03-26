@@ -3,7 +3,7 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../ApiUrl';
 import { styles } from '../styles/loginStyle';
 
-export default function LoginScreen({ onGoToRegister }) {
+export default function LoginScreen({ onGoToRegister, onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,6 +18,7 @@ export default function LoginScreen({ onGoToRegister }) {
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
       setEmail('');
       setPassword('');
+      onLoginSuccess?.();
     } catch (error) {
       const errorMsg = error.response?.data?.message || 'Falha ao realizar login.';
       Alert.alert('Erro', errorMsg);

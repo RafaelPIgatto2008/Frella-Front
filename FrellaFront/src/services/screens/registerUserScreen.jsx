@@ -3,7 +3,7 @@ import { View, TextInput, Alert, Text, TouchableOpacity } from 'react-native';
 import api from "../ApiUrl";
 import { styles } from '../styles/registerUserStyle';
 
-export default function RegisterScreen({ onRegisterSuccess }) {
+export default function RegisterScreen({ onRegisterSuccess, onGoToLogin }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -81,6 +81,13 @@ export default function RegisterScreen({ onRegisterSuccess }) {
             <TouchableOpacity style={styles.button} onPress={handleRegister}>
                 <Text style={styles.buttonText}>Registar no Frella</Text>
             </TouchableOpacity>
+
+            <Text style={styles.footerText}>
+                Já tem conta?{' '}
+                <Text style={styles.linkText} onPress={onGoToLogin}>
+                    Entrar
+                </Text>
+            </Text>
         </View>
     );
 }
