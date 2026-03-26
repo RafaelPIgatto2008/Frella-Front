@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import api from '../ApiUrl';
+import { saveAccessToken } from '../tokenService';
 import { styles } from '../styles/loginStyle';
 
 export default function LoginScreen({ onGoToRegister, onLoginSuccess }) {
@@ -14,7 +15,16 @@ export default function LoginScreen({ onGoToRegister, onLoginSuccess }) {
     }
 
     try {
-      await api.post('Auth/Login', { email, password });
+      const response = await api.post('Auth/Login', { email, password });
+      const accessToken =
+        response.data?.accessToken || response.data?.token || response.data?.jwt;
+
+      if (!accessToken) {
+        Alert.alert('Erro', 'Login realizado, mas o access token nao foi retornado.');
+        return;
+      }
+
+      await saveAccessToken(accessToken);
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
       setEmail('');
       setPassword('');

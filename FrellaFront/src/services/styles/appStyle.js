@@ -5,4 +5,9 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F9FE',
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
