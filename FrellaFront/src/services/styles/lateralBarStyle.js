@@ -13,6 +13,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  profileSectionPressable: {
+    borderRadius: 16,
+    paddingVertical: 8,
+  },
   avatar: {
     width: 58,
     height: 58,

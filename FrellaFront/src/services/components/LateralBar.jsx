@@ -7,17 +7,22 @@ export default function LateralBar({
   profileName = 'User',
   profileRole = 'Seu perfil',
   navigationItems = [],
+  onProfilePress,
   onLogout,
 }) {
   return (
     <View style={styles.sidebar}>
-      <View style={styles.profileSection}>
+      <TouchableOpacity
+        style={[styles.profileSection, onProfilePress && styles.profileSectionPressable]}
+        onPress={onProfilePress}
+        disabled={!onProfilePress}
+      >
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>{profileInitials}</Text>
         </View>
         <Text style={styles.profileName}>{profileName}</Text>
         <Text style={styles.profileRole}>{profileRole}</Text>
-      </View>
+      </TouchableOpacity>
 
       <View style={styles.navigationSection}>
         {navigationItems.map((item) => (

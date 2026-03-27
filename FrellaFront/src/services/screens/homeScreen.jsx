@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
-import { getAllServices } from '../Services';
+import { candidateToService, getAllServices } from '../Services';
 import { styles } from '../styles/homeStyle';
 
-export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }) {
+export default function HomeScreen({
+  onLogout,
+  onGoToCreateService,
+  onGoToHome,
+  onGoToNews,
+  onGoToUserDetails,
+  onGoToServiceDetails,
+}) {
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [isApplyingToServiceId, setIsApplyingToServiceId] = useState('');
   const [servicesError, setServicesError] = useState('');
+  const [serviceId, setServiceId] = useState('');
 
   const navigationItems = [
     { icon: 'H', label: 'Home', active: true, onPress: onGoToHome },
-    { icon: '+', label: 'Services', onPress: onGoToCreateService },
-    { icon: 'F', label: 'Favoritos' },
+    { icon: 'N', label: 'News', onPress: onGoToNews },
+    { icon: '+', label: 'New', onPress: onGoToCreateService },
   ];
 
   useEffect(() => {
@@ -21,17 +30,15 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
         setIsLoadingServices(true);
         setServicesError('');
         const response = await getAllServices();
-        const rawServices = Array.isArray(response)
-          ? response
-          : Array.isArray(response?.value)
-            ? response.value
-            : [];
+        const rawServices = Array.isArray(response) ? response : [];
 
         const normalizedServices = rawServices.map((service) => ({
+          id: service.id ?? service.Id ?? service.serviceId ?? service.ServiceId ?? '',
           title: service.title ?? service.Title ?? '',
           description: service.description ?? service.Description ?? '',
           amount: service.amount ?? service.Amount ?? 0,
           serviceType: service.serviceType ?? service.ServiceType ?? '',
+          status: service.status ?? service.Status ?? '',
         }));
 
         setServices(normalizedServices);
@@ -46,6 +53,26 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
     loadServices();
   }, []);
 
+  const handleCandidate = async (serviceItem) => {
+    const targetId = serviceItem?.id;
+
+    if (!targetId) {
+      Alert.alert('Atencao', 'Este servico nao possui ID disponivel para candidatura.');
+      return;
+    }
+
+    try {
+      setIsApplyingToServiceId(String(targetId));
+      await candidateToService(targetId);
+      Alert.alert('Sucesso', 'Candidatura enviada com sucesso.');
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || 'Falha ao enviar candidatura.';
+      Alert.alert('Erro', errorMsg);
+    } finally {
+      setIsApplyingToServiceId('');
+    }
+  };
+
   return (
     <View style={styles.container}>
       <LateralBar
@@ -53,6 +80,7 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
         profileName="User"
         profileRole="Seu perfil"
         navigationItems={navigationItems}
+        onProfilePress={onGoToUserDetails}
         onLogout={onLogout}
       />
 
@@ -63,7 +91,7 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
         </Text>
 
         <View style={styles.searchCard}>
-          <Text style={styles.searchLabel}>Buscar para adicionar servico</Text>
+          <Text style={styles.searchLabel}>Acoes rapidas</Text>
           <View style={styles.searchRow}>
             <View style={styles.searchInputWrapper}>
               <View style={styles.searchIcon} accessible={false}>
@@ -72,21 +100,40 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
               </View>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Pesquisar servicos"
+                placeholder="ID do servico para abrir detalhes"
                 placeholderTextColor="#8B95A7"
+                value={serviceId}
+                onChangeText={setServiceId}
               />
             </View>
 
-            <TouchableOpacity style={styles.addServiceButton} onPress={onGoToCreateService}>
-              <Text style={styles.addServiceButtonText}>Adicionar</Text>
-            </TouchableOpacity>
+            <View style={styles.quickActionsRow}>
+              <TouchableOpacity
+                style={styles.addServiceButton}
+                onPress={() => onGoToServiceDetails?.(serviceId.trim())}
+              >
+                <Text style={styles.addServiceButtonText}>Servico</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToCreateService}>
+                <Text style={styles.secondaryActionButtonText}>Adicionar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.searchRow}>
+            <View style={styles.quickActionsRow}>
+              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToNews}>
+                <Text style={styles.secondaryActionButtonText}>Noticias</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
         <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Navegacao rapida</Text>
+          <Text style={styles.infoTitle}>Novos endpoints</Text>
           <Text style={styles.infoText}>
-            A barra lateral mantem seu perfil no topo e facilita acessar home, servicos e favoritos.
+            Clique em `Seu perfil` na barra lateral para ver seus dados, ou use os atalhos para noticias, servico por ID e candidatura.
           </Text>
         </View>
 
@@ -115,6 +162,35 @@ export default function HomeScreen({ onLogout, onGoToCreateService, onGoToHome }
                 </View>
                 <Text style={styles.serviceDescription}>{service.description}</Text>
                 <Text style={styles.serviceAmount}>R$ {Number(service.amount).toFixed(2)}</Text>
+                {service.status ? (
+                  <Text style={styles.serviceStatus}>Status: {service.status}</Text>
+                ) : null}
+
+                <View style={styles.serviceActions}>
+                  <TouchableOpacity
+                    style={[styles.serviceActionButton, !service.id && styles.serviceActionButtonDisabled]}
+                    onPress={() => onGoToServiceDetails?.(service.id)}
+                    disabled={!service.id}
+                  >
+                    <Text style={styles.serviceActionButtonText}>
+                      {service.id ? 'Ver detalhes' : 'Sem ID'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={[
+                      styles.serviceSecondaryButton,
+                      (!service.id || isApplyingToServiceId === String(service.id)) &&
+                        styles.serviceActionButtonDisabled,
+                    ]}
+                    onPress={() => handleCandidate(service)}
+                    disabled={!service.id || isApplyingToServiceId === String(service.id)}
+                  >
+                    <Text style={styles.serviceSecondaryButtonText}>
+                      {isApplyingToServiceId === String(service.id) ? 'Enviando...' : 'Candidatar-se'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             ))
           )}

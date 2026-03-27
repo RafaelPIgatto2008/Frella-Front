@@ -43,6 +43,7 @@ export const styles = StyleSheet.create({
   },
   searchRow: {
     gap: 14,
+    marginBottom: 14,
   },
   searchInputWrapper: {
     flexDirection: 'row',
@@ -84,14 +85,32 @@ export const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   addServiceButton: {
-    alignSelf: 'flex-start',
     backgroundColor: '#2C8C99',
     paddingHorizontal: 20,
     paddingVertical: 13,
     borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addServiceButtonText: {
     color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  quickActionsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  secondaryActionButton: {
+    backgroundColor: '#DCEAF4',
+    paddingHorizontal: 20,
+    paddingVertical: 13,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryActionButtonText: {
+    color: '#29455C',
     fontSize: 15,
     fontWeight: '700',
   },
@@ -187,5 +206,46 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#2C8C99',
+  },
+  serviceStatus: {
+    marginTop: 8,
+    fontSize: 13,
+    color: '#526071',
+    fontWeight: '600',
+  },
+  serviceActions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 14,
+  },
+  serviceActionButton: {
+    flex: 1,
+    minWidth: 130,
+    backgroundColor: '#2C8C99',
+    borderRadius: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  serviceActionButtonDisabled: {
+    opacity: 0.65,
+  },
+  serviceActionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  serviceSecondaryButton: {
+    flex: 1,
+    minWidth: 130,
+    backgroundColor: '#DCEAF4',
+    borderRadius: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  serviceSecondaryButtonText: {
+    color: '#29455C',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });
