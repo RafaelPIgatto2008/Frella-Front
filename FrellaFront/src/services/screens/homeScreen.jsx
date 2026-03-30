@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
-import { candidateToService, getAllServices } from '../Services';
+import { getAllServices } from '../Services';
 import { styles } from '../styles/homeStyle';
 
 export default function HomeScreen({
@@ -9,17 +9,18 @@ export default function HomeScreen({
   onGoToCreateService,
   onGoToHome,
   onGoToNews,
+  onGoToServices,
   onGoToUserDetails,
   onGoToServiceDetails,
 }) {
   const [services, setServices] = useState([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
-  const [isApplyingToServiceId, setIsApplyingToServiceId] = useState('');
   const [servicesError, setServicesError] = useState('');
   const [serviceId, setServiceId] = useState('');
 
   const navigationItems = [
     { icon: 'H', label: 'Home', active: true, onPress: onGoToHome },
+    { icon: 'S', label: 'My Services', onPress: onGoToServices },
     { icon: 'N', label: 'News', onPress: onGoToNews },
     { icon: '+', label: 'New', onPress: onGoToCreateService },
   ];
@@ -53,26 +54,6 @@ export default function HomeScreen({
     loadServices();
   }, []);
 
-  const handleCandidate = async (serviceItem) => {
-    const targetId = serviceItem?.id;
-
-    if (!targetId) {
-      Alert.alert('Atencao', 'Este servico nao possui ID disponivel para candidatura.');
-      return;
-    }
-
-    try {
-      setIsApplyingToServiceId(String(targetId));
-      await candidateToService(targetId);
-      Alert.alert('Sucesso', 'Candidatura enviada com sucesso.');
-    } catch (error) {
-      const errorMsg = error.response?.data?.message || 'Falha ao enviar candidatura.';
-      Alert.alert('Erro', errorMsg);
-    } finally {
-      setIsApplyingToServiceId('');
-    }
-  };
-
   return (
     <View style={styles.container}>
       <LateralBar
@@ -85,9 +66,9 @@ export default function HomeScreen({
       />
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Encontre e gerencie servicos</Text>
+        <Text style={styles.title}>Encontre e gerencie seus servicos</Text>
         <Text style={styles.subtitle}>
-          Use a busca para encontrar um servico ou adicionar um novo ao seu catalogo.
+          Use a busca para abrir um dos seus servicos ou adicionar um novo ao seu catalogo.
         </Text>
 
         <View style={styles.searchCard}>
@@ -123,6 +104,9 @@ export default function HomeScreen({
 
           <View style={styles.searchRow}>
             <View style={styles.quickActionsRow}>
+              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToServices}>
+                <Text style={styles.secondaryActionButtonText}>Meus servicos</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToNews}>
                 <Text style={styles.secondaryActionButtonText}>Noticias</Text>
               </TouchableOpacity>
@@ -133,12 +117,12 @@ export default function HomeScreen({
         <View style={styles.infoCard}>
           <Text style={styles.infoTitle}>Novos endpoints</Text>
           <Text style={styles.infoText}>
-            Clique em `Seu perfil` na barra lateral para ver seus dados, ou use os atalhos para noticias, servico por ID e candidatura.
+            Clique em `Seu perfil` na barra lateral para ver seus dados, ou use os atalhos para noticias e para acessar a lista dos seus servicos.
           </Text>
         </View>
 
         <View style={styles.servicesCard}>
-          <Text style={styles.servicesTitle}>Servicos cadastrados</Text>
+          <Text style={styles.servicesTitle}>Seus servicos cadastrados</Text>
 
           {isLoadingServices ? (
             <View style={styles.servicesStatusBox}>
@@ -174,20 +158,6 @@ export default function HomeScreen({
                   >
                     <Text style={styles.serviceActionButtonText}>
                       {service.id ? 'Ver detalhes' : 'Sem ID'}
-                    </Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={[
-                      styles.serviceSecondaryButton,
-                      (!service.id || isApplyingToServiceId === String(service.id)) &&
-                        styles.serviceActionButtonDisabled,
-                    ]}
-                    onPress={() => handleCandidate(service)}
-                    disabled={!service.id || isApplyingToServiceId === String(service.id)}
-                  >
-                    <Text style={styles.serviceSecondaryButtonText}>
-                      {isApplyingToServiceId === String(service.id) ? 'Enviando...' : 'Candidatar-se'}
                     </Text>
                   </TouchableOpacity>
                 </View>

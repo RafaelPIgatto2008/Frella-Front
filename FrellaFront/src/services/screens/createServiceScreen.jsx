@@ -11,7 +11,13 @@ const serviceTypeOptions = [
   { label: 'Extreme', value: 3 },
 ];
 
-export default function CreateServiceScreen({ onBackHome, onLogout, onGoToNews, onGoToUserDetails }) {
+export default function CreateServiceScreen({
+  onBackHome,
+  onLogout,
+  onGoToNews,
+  onGoToServices,
+  onGoToUserDetails,
+}) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
@@ -20,6 +26,7 @@ export default function CreateServiceScreen({ onBackHome, onLogout, onGoToNews, 
 
   const navigationItems = [
     { icon: 'H', label: 'Home', onPress: onBackHome },
+    { icon: 'S', label: 'Services', onPress: onGoToServices },
     { icon: 'N', label: 'News', onPress: onGoToNews },
     { icon: '+', label: 'New', active: true, onPress: () => {} },
   ];

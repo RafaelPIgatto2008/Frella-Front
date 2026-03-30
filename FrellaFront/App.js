@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, SafeAreaView, StatusBar, View } from 'react-native';
 import CreateServiceScreen from './src/services/screens/createServiceScreen';
+import CandidatesScreen from './src/services/screens/candidatesScreen';
 import HomeScreen from './src/services/screens/homeScreen';
 import LoginScreen from './src/services/screens/loginScreen';
 import NewsDetailsScreen from './src/services/screens/newsDetailsScreen';
 import NewsScreen from './src/services/screens/newsScreen';
 import RegisterScreen from './src/services/screens/registerUserScreen';
 import ServiceDetailsScreen from './src/services/screens/serviceDetailsScreen';
+import ServicesScreen from './src/services/screens/servicesScreen';
 import UserDetailsScreen from './src/services/screens/userDetailsScreen';
 import { getAccessToken, removeAccessToken } from './src/services/tokenService';
 import { styles } from './src/services/styles/appStyle';
@@ -15,16 +17,23 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState('login');
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [selectedServiceId, setSelectedServiceId] = useState('');
+  const [selectedServiceTitle, setSelectedServiceTitle] = useState('');
   const [selectedNewsId, setSelectedNewsId] = useState('');
   const goToHome = () => setCurrentScreen('home');
   const goToLogin = () => setCurrentScreen('login');
   const goToRegister = () => setCurrentScreen('register');
   const goToCreateService = () => setCurrentScreen('create-service');
   const goToNews = () => setCurrentScreen('news');
+  const goToServices = () => setCurrentScreen('services');
   const goToUserDetails = () => setCurrentScreen('user-details');
   const goToServiceDetails = (serviceId = '') => {
     setSelectedServiceId(serviceId);
     setCurrentScreen('service-details');
+  };
+  const goToServiceCandidates = (serviceId = '', serviceTitle = '') => {
+    setSelectedServiceId(serviceId);
+    setSelectedServiceTitle(serviceTitle);
+    setCurrentScreen('service-candidates');
   };
   const goToNewsDetails = (newsId = '') => {
     setSelectedNewsId(newsId);
@@ -78,8 +87,33 @@ export default function App() {
           onGoToHome={goToHome}
           onGoToCreateService={goToCreateService}
           onGoToNews={goToNews}
+          onGoToServices={goToServices}
           onGoToUserDetails={goToUserDetails}
           onGoToServiceDetails={goToServiceDetails}
+        />
+      ) : currentScreen === 'services' ? (
+        <ServicesScreen
+          onLogout={handleLogout}
+          onBackHome={goToHome}
+          onGoToCreateService={goToCreateService}
+          onGoToNews={goToNews}
+          onGoToServices={goToServices}
+          onGoToUserDetails={goToUserDetails}
+          onOpenServiceDetails={goToServiceDetails}
+          onOpenServiceCandidates={goToServiceCandidates}
+        />
+      ) : currentScreen === 'service-candidates' ? (
+        <CandidatesScreen
+          onLogout={handleLogout}
+          initialServiceId={selectedServiceId}
+          initialServiceTitle={selectedServiceTitle}
+          navigationItems={[
+            { icon: 'H', label: 'Home', onPress: goToHome },
+            { icon: 'S', label: 'My Services', onPress: goToServices },
+            { icon: 'C', label: 'Candidates', active: true, onPress: () => goToServiceCandidates(selectedServiceId, selectedServiceTitle) },
+            { icon: '+', label: 'New', onPress: goToCreateService },
+          ]}
+          onProfilePress={goToUserDetails}
         />
       ) : currentScreen === 'news' ? (
         <NewsScreen
@@ -88,6 +122,7 @@ export default function App() {
           onOpenNewsDetails={goToNewsDetails}
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
+            { icon: 'S', label: 'My Services', onPress: goToServices },
             { icon: 'N', label: 'News', active: true, onPress: goToNews },
             { icon: '+', label: 'New', onPress: goToCreateService },
           ]}
@@ -98,6 +133,7 @@ export default function App() {
           onLogout={handleLogout}
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
+            { icon: 'S', label: 'My Services', onPress: goToServices },
             { icon: 'N', label: 'News', onPress: goToNews },
             { icon: '+', label: 'New', onPress: goToCreateService },
           ]}
@@ -109,8 +145,9 @@ export default function App() {
           initialServiceId={selectedServiceId}
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
+            { icon: 'S', label: 'My Services', onPress: goToServices },
             { icon: 'N', label: 'News', onPress: goToNews },
-            { icon: 'S', label: 'Serv', active: true, onPress: () => goToServiceDetails(selectedServiceId) },
+            { icon: 'D', label: 'Details', active: true, onPress: () => goToServiceDetails(selectedServiceId) },
           ]}
           onProfilePress={goToUserDetails}
         />
@@ -120,6 +157,7 @@ export default function App() {
           initialNewsId={selectedNewsId}
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
+            { icon: 'S', label: 'My Services', onPress: goToServices },
             { icon: 'N', label: 'News', active: true, onPress: goToNews },
             { icon: '+', label: 'New', onPress: goToCreateService },
           ]}
@@ -130,6 +168,7 @@ export default function App() {
           onBackHome={goToHome}
           onLogout={handleLogout}
           onGoToNews={goToNews}
+          onGoToServices={goToServices}
           onGoToUserDetails={goToUserDetails}
         />
       )}
