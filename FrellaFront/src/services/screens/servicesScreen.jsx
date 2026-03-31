@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { getMyServices } from '../Services';
 import { styles } from '../styles/detailScreenStyle';
 
@@ -37,7 +38,6 @@ export default function ServicesScreen({
   onLogout,
   onBackHome,
   onGoToCreateService,
-  onGoToNews,
   onGoToServices,
   onGoToUserDetails,
   onOpenServiceDetails,
@@ -50,7 +50,6 @@ export default function ServicesScreen({
   const navigationItems = [
     { icon: 'H', label: 'Home', onPress: onBackHome },
     { icon: 'S', label: 'My Services', active: true, onPress: onGoToServices },
-    { icon: 'N', label: 'News', onPress: onGoToNews },
     { icon: '+', label: 'New', onPress: onGoToCreateService },
   ];
 
@@ -123,37 +122,39 @@ export default function ServicesScreen({
                 ) : null}
 
                 <View style={styles.actionsRow}>
-                  <TouchableOpacity
+                  <MotionButton
                     style={[styles.primaryButton, styles.flexButton, !service.id && styles.primaryButtonDisabled]}
                     onPress={() => onOpenServiceDetails?.(service.id)}
                     disabled={!service.id}
+                    disabledStyle={styles.primaryButtonDisabled}
                   >
                     <Text style={styles.primaryButtonText}>
                       {service.id ? 'Ver detalhes' : 'ID indisponivel'}
                     </Text>
-                  </TouchableOpacity>
+                  </MotionButton>
 
-                  <TouchableOpacity
+                  <MotionButton
                     style={[styles.secondaryButton, styles.flexButton, !service.id && styles.primaryButtonDisabled]}
                     onPress={() => onOpenServiceCandidates?.(service.id, service.title)}
                     disabled={!service.id}
+                    disabledStyle={styles.primaryButtonDisabled}
                   >
                     <Text style={styles.secondaryButtonText}>
                       {service.id ? 'Ver candidatos' : 'ID indisponivel'}
                     </Text>
-                  </TouchableOpacity>
+                  </MotionButton>
                 </View>
               </View>
             ))
           )}
 
           <View style={styles.actionsRow}>
-            <TouchableOpacity style={[styles.secondaryButton, styles.flexButton]} onPress={loadServices}>
+            <MotionButton style={[styles.secondaryButton, styles.flexButton]} onPress={loadServices}>
               <Text style={styles.secondaryButtonText}>Atualizar lista</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.primaryButton, styles.flexButton]} onPress={onGoToCreateService}>
+            </MotionButton>
+            <MotionButton style={[styles.primaryButton, styles.flexButton]} onPress={onGoToCreateService}>
               <Text style={styles.primaryButtonText}>Criar servico</Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
       </ScrollView>

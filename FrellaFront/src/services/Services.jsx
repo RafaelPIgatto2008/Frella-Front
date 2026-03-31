@@ -71,7 +71,34 @@ export const getAllCandidatesFromService = async (serviceId) => {
 
 export const changeServiceStatus = async () => {
   try{
-    const response = await api.post("Change-Status")
+    const response = await api.post("Service/Change-Status")
+    return response.data;
+  }
+  catch(error){
+    throw error;
+  }
+}
+
+
+export const aproveCandidate = async (serviceId, userId) => {
+  try
+  {
+    const normalizedServiceId = String(serviceId || '').trim();
+    const normalizedUserId = String(userId || '').trim();
+
+    const response = await api.post(
+      "Service/Aprove-Candidate",
+      {
+        serviceId: normalizedServiceId,
+        userId: normalizedUserId,
+      },
+      {
+        params: {
+          serviceId: normalizedServiceId,
+          userId: normalizedUserId,
+        },
+      },
+    );
     return response.data;
   }
   catch(error){

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TextInput, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { getNewsById } from '../NewsService';
 import { styles } from '../styles/detailScreenStyle';
 
@@ -87,15 +88,16 @@ export default function NewsDetailsScreen({
               value={newsId}
               onChangeText={setNewsId}
             />
-            <TouchableOpacity
+            <MotionButton
               style={[styles.primaryButton, isLoadingNews && styles.primaryButtonDisabled]}
               onPress={() => loadNews(newsId)}
               disabled={isLoadingNews}
+              disabledStyle={styles.primaryButtonDisabled}
             >
               <Text style={styles.primaryButtonText}>
                 {isLoadingNews ? 'Buscando...' : 'Buscar'}
               </Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
 

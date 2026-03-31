@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { candidateToService, getServiceById } from '../Services';
 import { styles } from '../styles/detailScreenStyle';
 
@@ -144,15 +145,16 @@ export default function ServiceDetailsScreen({
               </View>
 
               <View style={styles.actionsRow}>
-                <TouchableOpacity
+                <MotionButton
                   style={[styles.primaryButton, styles.flexButton, isApplying && styles.primaryButtonDisabled]}
                   onPress={handleCandidate}
                   disabled={isApplying}
+                  disabledStyle={styles.primaryButtonDisabled}
                 >
                   <Text style={styles.primaryButtonText}>
                     {isApplying ? 'Enviando...' : 'Candidatar-se'}
                   </Text>
-                </TouchableOpacity>
+                </MotionButton>
               </View>
             </>
           )}

@@ -3,6 +3,7 @@ import { ActivityIndicator, SafeAreaView, StatusBar, View } from 'react-native';
 import CreateServiceScreen from './src/services/screens/createServiceScreen';
 import CandidatesScreen from './src/services/screens/candidatesScreen';
 import HomeScreen from './src/services/screens/homeScreen';
+import LandingScreen from './src/services/screens/landingScreen';
 import LoginScreen from './src/services/screens/loginScreen';
 import NewsDetailsScreen from './src/services/screens/newsDetailsScreen';
 import NewsScreen from './src/services/screens/newsScreen';
@@ -14,11 +15,12 @@ import { getAccessToken, removeAccessToken } from './src/services/tokenService';
 import { styles } from './src/services/styles/appStyle';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState('login');
+  const [currentScreen, setCurrentScreen] = useState('landing');
   const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [selectedServiceId, setSelectedServiceId] = useState('');
   const [selectedServiceTitle, setSelectedServiceTitle] = useState('');
   const [selectedNewsId, setSelectedNewsId] = useState('');
+  const goToLanding = () => setCurrentScreen('landing');
   const goToHome = () => setCurrentScreen('home');
   const goToLogin = () => setCurrentScreen('login');
   const goToRegister = () => setCurrentScreen('register');
@@ -41,14 +43,14 @@ export default function App() {
   };
   const handleLogout = async () => {
     await removeAccessToken();
-    goToLogin();
+    goToLanding();
   };
 
   useEffect(() => {
     const restoreSession = async () => {
       try {
         const accessToken = await getAccessToken();
-        setCurrentScreen(accessToken ? 'home' : 'login');
+        setCurrentScreen(accessToken ? 'home' : 'landing');
       } finally {
         setIsCheckingSession(false);
       }
@@ -60,7 +62,7 @@ export default function App() {
   if (isCheckingSession) {
     return (
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#F8F9FE" />
+        <StatusBar barStyle="dark-content" backgroundColor="#F3F7FA" />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#2C8C99" />
         </View>
@@ -70,8 +72,13 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F8F9FE" />
-      {currentScreen === 'register' ? (
+      <StatusBar barStyle="dark-content" backgroundColor="#F3F7FA" />
+      {currentScreen === 'landing' ? (
+        <LandingScreen
+          onGoToLogin={goToLogin}
+          onGoToRegister={goToRegister}
+        />
+      ) : currentScreen === 'register' ? (
         <RegisterScreen
           onRegisterSuccess={goToLogin}
           onGoToLogin={goToLogin}
@@ -86,7 +93,6 @@ export default function App() {
           onLogout={handleLogout}
           onGoToHome={goToHome}
           onGoToCreateService={goToCreateService}
-          onGoToNews={goToNews}
           onGoToServices={goToServices}
           onGoToUserDetails={goToUserDetails}
           onGoToServiceDetails={goToServiceDetails}
@@ -96,7 +102,6 @@ export default function App() {
           onLogout={handleLogout}
           onBackHome={goToHome}
           onGoToCreateService={goToCreateService}
-          onGoToNews={goToNews}
           onGoToServices={goToServices}
           onGoToUserDetails={goToUserDetails}
           onOpenServiceDetails={goToServiceDetails}
@@ -107,6 +112,7 @@ export default function App() {
           onLogout={handleLogout}
           initialServiceId={selectedServiceId}
           initialServiceTitle={selectedServiceTitle}
+          onCandidateApproved={goToServiceDetails}
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
             { icon: 'S', label: 'My Services', onPress: goToServices },
@@ -134,7 +140,6 @@ export default function App() {
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
             { icon: 'S', label: 'My Services', onPress: goToServices },
-            { icon: 'N', label: 'News', onPress: goToNews },
             { icon: '+', label: 'New', onPress: goToCreateService },
           ]}
           onProfilePress={goToUserDetails}
@@ -146,7 +151,6 @@ export default function App() {
           navigationItems={[
             { icon: 'H', label: 'Home', onPress: goToHome },
             { icon: 'S', label: 'My Services', onPress: goToServices },
-            { icon: 'N', label: 'News', onPress: goToNews },
             { icon: 'D', label: 'Details', active: true, onPress: () => goToServiceDetails(selectedServiceId) },
           ]}
           onProfilePress={goToUserDetails}
@@ -167,7 +171,6 @@ export default function App() {
         <CreateServiceScreen
           onBackHome={goToHome}
           onLogout={handleLogout}
-          onGoToNews={goToNews}
           onGoToServices={goToServices}
           onGoToUserDetails={goToUserDetails}
         />

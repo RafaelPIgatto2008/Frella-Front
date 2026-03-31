@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TextInput, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { getAllServices } from '../Services';
 import { styles } from '../styles/homeStyle';
 
@@ -8,7 +9,6 @@ export default function HomeScreen({
   onLogout,
   onGoToCreateService,
   onGoToHome,
-  onGoToNews,
   onGoToServices,
   onGoToUserDetails,
   onGoToServiceDetails,
@@ -21,7 +21,6 @@ export default function HomeScreen({
   const navigationItems = [
     { icon: 'H', label: 'Home', active: true, onPress: onGoToHome },
     { icon: 'S', label: 'My Services', onPress: onGoToServices },
-    { icon: 'N', label: 'News', onPress: onGoToNews },
     { icon: '+', label: 'New', onPress: onGoToCreateService },
   ];
 
@@ -89,36 +88,26 @@ export default function HomeScreen({
             </View>
 
             <View style={styles.quickActionsRow}>
-              <TouchableOpacity
+              <MotionButton
                 style={styles.addServiceButton}
                 onPress={() => onGoToServiceDetails?.(serviceId.trim())}
               >
                 <Text style={styles.addServiceButtonText}>Servico</Text>
-              </TouchableOpacity>
+              </MotionButton>
 
-              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToCreateService}>
+              <MotionButton style={styles.secondaryActionButton} onPress={onGoToCreateService}>
                 <Text style={styles.secondaryActionButtonText}>Adicionar</Text>
-              </TouchableOpacity>
+              </MotionButton>
             </View>
           </View>
 
           <View style={styles.searchRow}>
             <View style={styles.quickActionsRow}>
-              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToServices}>
+              <MotionButton style={styles.secondaryActionButton} onPress={onGoToServices}>
                 <Text style={styles.secondaryActionButtonText}>Meus servicos</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.secondaryActionButton} onPress={onGoToNews}>
-                <Text style={styles.secondaryActionButtonText}>Noticias</Text>
-              </TouchableOpacity>
+              </MotionButton>
             </View>
           </View>
-        </View>
-
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Novos endpoints</Text>
-          <Text style={styles.infoText}>
-            Clique em `Seu perfil` na barra lateral para ver seus dados, ou use os atalhos para noticias e para acessar a lista dos seus servicos.
-          </Text>
         </View>
 
         <View style={styles.servicesCard}>
@@ -151,15 +140,16 @@ export default function HomeScreen({
                 ) : null}
 
                 <View style={styles.serviceActions}>
-                  <TouchableOpacity
+                  <MotionButton
                     style={[styles.serviceActionButton, !service.id && styles.serviceActionButtonDisabled]}
                     onPress={() => onGoToServiceDetails?.(service.id)}
                     disabled={!service.id}
+                    disabledStyle={styles.serviceActionButtonDisabled}
                   >
                     <Text style={styles.serviceActionButtonText}>
                       {service.id ? 'Ver detalhes' : 'Sem ID'}
                     </Text>
-                  </TouchableOpacity>
+                  </MotionButton>
                 </View>
               </View>
             ))

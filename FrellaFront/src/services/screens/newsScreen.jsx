@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, TextInput, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { getAllNews, getNewsById } from '../NewsService';
 import { styles } from '../styles/detailScreenStyle';
 
@@ -101,15 +102,16 @@ export default function NewsScreen({
               value={selectedNewsId}
               onChangeText={setSelectedNewsId}
             />
-            <TouchableOpacity
+            <MotionButton
               style={[styles.primaryButton, isSearchingNews && styles.primaryButtonDisabled]}
               onPress={handleSearchNews}
               disabled={isSearchingNews}
+              disabledStyle={styles.primaryButtonDisabled}
             >
               <Text style={styles.primaryButtonText}>
                 {isSearchingNews ? 'Buscando...' : 'Abrir'}
               </Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
 
@@ -138,23 +140,24 @@ export default function NewsScreen({
                   <Text style={styles.metaText}>Publicado em: {newsItem.publishAt}</Text>
                 ) : null}
 
-                <TouchableOpacity
+                <MotionButton
                   style={styles.primaryButton}
                   onPress={() => onOpenNewsDetails?.(newsItem.id)}
                   disabled={!newsItem.id}
+                  disabledStyle={styles.primaryButtonDisabled}
                 >
                   <Text style={styles.primaryButtonText}>
                     {newsItem.id ? 'Ver detalhes' : 'ID indisponivel'}
                   </Text>
-                </TouchableOpacity>
+                </MotionButton>
               </View>
             ))
           )}
 
           <View style={styles.actionsRow}>
-            <TouchableOpacity style={[styles.secondaryButton, styles.flexButton]} onPress={onBackHome}>
+            <MotionButton style={[styles.secondaryButton, styles.flexButton]} onPress={onBackHome}>
               <Text style={styles.secondaryButtonText}>Voltar para home</Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
       </ScrollView>

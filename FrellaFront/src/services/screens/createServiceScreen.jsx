@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, TextInput, View } from 'react-native';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { createService } from '../Services';
 import { styles } from '../styles/createServiceStyle';
 
@@ -14,7 +15,6 @@ const serviceTypeOptions = [
 export default function CreateServiceScreen({
   onBackHome,
   onLogout,
-  onGoToNews,
   onGoToServices,
   onGoToUserDetails,
 }) {
@@ -27,7 +27,6 @@ export default function CreateServiceScreen({
   const navigationItems = [
     { icon: 'H', label: 'Home', onPress: onBackHome },
     { icon: 'S', label: 'Services', onPress: onGoToServices },
-    { icon: 'N', label: 'News', onPress: onGoToNews },
     { icon: '+', label: 'New', active: true, onPress: () => {} },
   ];
 
@@ -120,7 +119,7 @@ export default function CreateServiceScreen({
           <Text style={styles.label}>ServiceType</Text>
           <View style={styles.serviceTypeGrid}>
             {serviceTypeOptions.map((option) => (
-              <TouchableOpacity
+              <MotionButton
                 key={option.value}
                 style={[
                   styles.serviceTypeOption,
@@ -136,24 +135,25 @@ export default function CreateServiceScreen({
                 >
                   {option.label}
                 </Text>
-              </TouchableOpacity>
+              </MotionButton>
             ))}
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.secondaryButton} onPress={onBackHome}>
+            <MotionButton style={styles.secondaryButton} onPress={onBackHome}>
               <Text style={styles.secondaryButtonText}>Cancelar</Text>
-            </TouchableOpacity>
+            </MotionButton>
 
-            <TouchableOpacity
+            <MotionButton
               style={[styles.primaryButton, isSubmitting && styles.primaryButtonDisabled]}
               onPress={handleCreateService}
               disabled={isSubmitting}
+              disabledStyle={styles.primaryButtonDisabled}
             >
               <Text style={styles.primaryButtonText}>
                 {isSubmitting ? 'Criando...' : 'Criar servico'}
               </Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
       </ScrollView>

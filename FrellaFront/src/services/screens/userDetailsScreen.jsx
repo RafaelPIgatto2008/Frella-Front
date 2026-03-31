@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { getUserById } from '../AuthService';
 import LateralBar from '../components/LateralBar';
+import MotionButton from '../components/MotionButton';
 import { styles } from '../styles/detailScreenStyle';
 
 const normalizeUser = (user) => ({
@@ -59,15 +60,16 @@ export default function UserDetailsScreen({
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Dados da conta</Text>
           <View style={styles.actionsRow}>
-            <TouchableOpacity
+            <MotionButton
               style={[styles.primaryButton, styles.flexButton, isLoadingUser && styles.primaryButtonDisabled]}
               onPress={loadUser}
               disabled={isLoadingUser}
+              disabledStyle={styles.primaryButtonDisabled}
             >
               <Text style={styles.primaryButtonText}>
                 {isLoadingUser ? 'Atualizando...' : 'Atualizar dados'}
               </Text>
-            </TouchableOpacity>
+            </MotionButton>
           </View>
         </View>
 
